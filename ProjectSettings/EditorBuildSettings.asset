@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Authentication/Start Login.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Authentication/Start Reg 1.unity
+    guid: 3925904e3b3948341b1dfab664b7c399
+  - enabled: 1
+    path: Assets/Scenes/Authentication/Start Reg 2.unity
+    guid: bfe6e2c872b8bfb45be3215ffba99a6a
+  - enabled: 1
+    path: Assets/Scenes/Authentication/Start Reg 3.unity
+    guid: 76482532262b35d488a7ab1236216bab
+  - enabled: 1
+    path: Assets/Scenes/Authentication/Start Reg 4.unity
+    guid: 91212597d7360364ba51ba4e76e2194c
+  - enabled: 1
+    path: Assets/Scenes/Disclaimer.unity
+    guid: 1774f1a76ff32b046b2a5973418874ce
+  - enabled: 1
+    path: Assets/Scenes/Library.unity
+    guid: 23db3614c4fc18447bb9972828f38372
+  - enabled: 1
+    path: Assets/Scenes/Poster.unity
+    guid: fb8d46774659c3d48ae670075fa32296
+  - enabled: 1
+    path: Assets/Scenes/Squads.unity
+    guid: 13bae74c35a6fd64c8c57ddabd43204f
+  m_configObjects: {}
