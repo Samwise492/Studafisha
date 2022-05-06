@@ -64,4 +64,27 @@ public class Poster : MonoBehaviour
     public void OnClickWhatBringOn() => OnClickOpenContent(infoButton, whatBringOnContent);
     public void OnClickSignUp() => OnClickOpenContent(whatBringOnButton, signUpContent);
     public void OnClickInfo() => OnClickOpenContent(infoButton, infoContent);
+
+    // Sign Up
+    public void OnClickSignUp_Participant()
+    {
+
+    }
+    public void OnClickSignUp_Volunteer()
+    {
+
+    }
+    // Info
+    public void OnClickInfo_Plan()
+    {
+
+    }
+    public void OnClickInfo_Group()
+    {
+
+    }
+    public void OnClickInfo_Photos()
+    {
+
+    }
 }
