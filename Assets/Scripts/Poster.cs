@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 public class Poster : MonoBehaviour
 {
     [SerializeField] Image headerMain, headerEvent, footer;
+    [SerializeField] Image headerEvent_mainTitle, headerEvent_participantTitle, headerEvent_volunteerTitle;
     [SerializeField] Image viewpointMain, viewpointEvent;
     [SerializeField] Button creatorsButton, whatBringOnButton, signUpButton, infoButton;
     [SerializeField] GameObject creatorsContent, whatBringOnContent, signUpContent, infoContent;
@@ -20,12 +21,20 @@ public class Poster : MonoBehaviour
         viewpointMain.enabled = false;
         viewpointEvent.enabled = true;
     }
-    public void OnClickBackToMenu()
+    public void OnClickBackToMenu(Image presentHeader, Image nextHeader, Image presentViewpoint, Image nextViewpoint)
     {
-        headerMain.enabled = true;
-        headerEvent.enabled = false;
-        viewpointMain.enabled = true;
-        viewpointEvent.enabled = false;
+        if (nextHeader == headerMain)
+        {
+            nextHeader.enabled = true;
+            presentHeader.enabled = false;
+        }
+        else
+        {
+            // поменяй логику на прошлой кнопке бэка
+            //if 
+        }
+        nextViewpoint.enabled = true;
+        presentViewpoint.enabled = false;
     }
     public void FooterSwitch()
     {
@@ -61,8 +70,8 @@ public class Poster : MonoBehaviour
         }
     }
     public void OnClickCreators() => OnClickOpenContent(creatorsButton, creatorsContent);
-    public void OnClickWhatBringOn() => OnClickOpenContent(infoButton, whatBringOnContent);
-    public void OnClickSignUp() => OnClickOpenContent(whatBringOnButton, signUpContent);
+    public void OnClickWhatBringOn() => OnClickOpenContent(whatBringOnButton, whatBringOnContent);
+    public void OnClickSignUp() => OnClickOpenContent(signUpButton, signUpContent);
     public void OnClickInfo() => OnClickOpenContent(infoButton, infoContent);
 
     // Sign Up
