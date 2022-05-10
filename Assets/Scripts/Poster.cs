@@ -7,34 +7,47 @@ using UnityEngine.EventSystems;
 
 public class Poster : MonoBehaviour
 {
+    [SerializeField] ScrollRect scrollView;
     [SerializeField] Image headerMain, headerEvent, footer;
     [SerializeField] Image headerEvent_mainTitle, headerEvent_participantTitle, headerEvent_volunteerTitle;
-    [SerializeField] Image viewpointMain, viewpointEvent;
+    [SerializeField] Image viewportMain, viewportEvent, viewportEvent_Participant, viewportEvent_Volunteer;
     [SerializeField] Button creatorsButton, whatBringOnButton, signUpButton, infoButton;
     [SerializeField] GameObject creatorsContent, whatBringOnContent, signUpContent, infoContent;
 
     public void OnClickAvatar() => SceneManager.LoadSceneAsync("Profile", LoadSceneMode.Single);
     public void OnClickEvent()
     {
-        headerMain.enabled = false;
-        headerEvent.enabled = true;
-        viewpointMain.enabled = false;
-        viewpointEvent.enabled = true;
+        headerMain.gameObject.SetActive(false);
+        viewportMain.gameObject.SetActive(false);
+        headerEvent.gameObject.SetActive(true);
+        viewportEvent.gameObject.SetActive(true);
+
+        // change content scroll view unity
+        //scrollView.set = viewportEvent;
     }
-    public void OnClickBackToMenu(Image presentHeader, Image nextHeader, Image presentViewpoint, Image nextViewpoint)
+    public void OnClickBackToMenu()
     {
-        if (nextHeader == headerMain)
+        if (viewportEvent.IsActive() == true) // main event window is opened
         {
-            nextHeader.enabled = true;
-            presentHeader.enabled = false;
+            headerEvent.gameObject.SetActive(false);
+            viewportEvent.gameObject.SetActive(false);
+            headerMain.gameObject.SetActive(true);
+            viewportMain.gameObject.SetActive(true);
         }
-        else
+        if (viewportEvent_Participant.IsActive() == true) // participant event window is opened
         {
-            // поменяй логику на прошлой кнопке бэка
-            //if 
+            headerEvent_participantTitle.gameObject.SetActive(false);
+            viewportEvent_Participant.gameObject.SetActive(false);
+            headerEvent_mainTitle.gameObject.SetActive(true);
+            viewportEvent.gameObject.SetActive(true);
         }
-        nextViewpoint.enabled = true;
-        presentViewpoint.enabled = false;
+        if (viewportEvent_Volunteer.IsActive() == true) // volunteer event window is opened
+        {
+            headerEvent_volunteerTitle.gameObject.SetActive(false);
+            viewportEvent_Volunteer.gameObject.SetActive(false);
+            headerEvent_mainTitle.gameObject.SetActive(true);
+            viewportEvent.gameObject.SetActive(true);
+        }
     }
     public void FooterSwitch()
     {
@@ -75,14 +88,9 @@ public class Poster : MonoBehaviour
     public void OnClickInfo() => OnClickOpenContent(infoButton, infoContent);
 
     // Sign Up
-    public void OnClickSignUp_Participant()
-    {
+    public void OnClickSignUp_Participant() => viewportEvent_Participant.gameObject.SetActive(true);
+    public void OnClickSignUp_Volunteer() => viewportEvent_Volunteer.gameObject.SetActive(true);
 
-    }
-    public void OnClickSignUp_Volunteer()
-    {
-
-    }
     // Info
     public void OnClickInfo_Plan()
     {
