@@ -10,44 +10,44 @@ public class Poster : MonoBehaviour
     [SerializeField] ScrollRect scrollView;
     [SerializeField] Image headerMain, headerEvent, footer;
     [SerializeField] Image headerEvent_mainTitle, headerEvent_participantTitle, headerEvent_volunteerTitle;
-    [SerializeField] Image viewportMain, viewportEvent, viewportEvent_Participant, viewportEvent_Volunteer;
+    [SerializeField] Image scrollViewMain, scrollViewEvent, scrollViewEvent_Participant, scrollViewEvent_Volunteer;
     [SerializeField] Button creatorsButton, whatBringOnButton, signUpButton, infoButton;
     [SerializeField] GameObject creatorsContent, whatBringOnContent, signUpContent, infoContent;
+
+    [SerializeField] Button autoSignUpParticipantButton, manualSignUpParticipantButton;
+    [SerializeField] GameObject autoSignUpParticipantContent, manualSignUpParticipantContent;
 
     public void OnClickAvatar() => SceneManager.LoadSceneAsync("Profile", LoadSceneMode.Single);
     public void OnClickEvent()
     {
         headerMain.gameObject.SetActive(false);
-        viewportMain.gameObject.SetActive(false);
+        scrollViewMain.gameObject.SetActive(false);
         headerEvent.gameObject.SetActive(true);
-        viewportEvent.gameObject.SetActive(true);
-
-        // change content scroll view unity
-        //scrollView.set = viewportEvent;
+        scrollViewEvent.gameObject.SetActive(true);
     }
     public void OnClickBackToMenu()
     {
-        if (viewportEvent.IsActive() == true) // main event window is opened
+        if (scrollViewEvent.gameObject.activeSelf == true) // main event window is opened
         {
             headerEvent.gameObject.SetActive(false);
-            viewportEvent.gameObject.SetActive(false);
+            scrollViewEvent.gameObject.SetActive(false);
             headerMain.gameObject.SetActive(true);
-            viewportMain.gameObject.SetActive(true);
+            scrollViewMain.gameObject.SetActive(true);
         }
-        if (viewportEvent_Participant.IsActive() == true) // participant event window is opened
+        if (scrollViewEvent_Participant.gameObject.activeSelf == true) // participant event window is opened
         {
             headerEvent_participantTitle.gameObject.SetActive(false);
-            viewportEvent_Participant.gameObject.SetActive(false);
+            scrollViewEvent_Participant.gameObject.SetActive(false);
             headerEvent_mainTitle.gameObject.SetActive(true);
-            viewportEvent.gameObject.SetActive(true);
+            scrollViewEvent.gameObject.SetActive(true);
         }
-        if (viewportEvent_Volunteer.IsActive() == true) // volunteer event window is opened
-        {
-            headerEvent_volunteerTitle.gameObject.SetActive(false);
-            viewportEvent_Volunteer.gameObject.SetActive(false);
-            headerEvent_mainTitle.gameObject.SetActive(true);
-            viewportEvent.gameObject.SetActive(true);
-        }
+        // if (scrollViewEvent_Volunteer.activeself == true) // volunteer event window is opened
+        // {
+        //     headerEvent_volunteerTitle.gameObject.SetActive(false);
+        //     scrollViewEvent_Volunteer.gameObject.SetActive(false);
+        //     headerEvent_mainTitle.gameObject.SetActive(true);
+        //     scrollViewEvent.gameObject.SetActive(true);
+        // }
     }
     public void FooterSwitch()
     {
@@ -88,8 +88,18 @@ public class Poster : MonoBehaviour
     public void OnClickInfo() => OnClickOpenContent(infoButton, infoContent);
 
     // Sign Up
-    public void OnClickSignUp_Participant() => viewportEvent_Participant.gameObject.SetActive(true);
-    public void OnClickSignUp_Volunteer() => viewportEvent_Volunteer.gameObject.SetActive(true);
+    public void OnClickSignUp_Participant()
+    {
+        scrollViewEvent.gameObject.SetActive(false);
+        scrollViewEvent_Participant.gameObject.SetActive(true);
+    }
+    public void OnClickSignUp_Volunteer()
+    {
+        scrollViewEvent.gameObject.SetActive(false);
+        scrollViewEvent_Volunteer.gameObject.SetActive(true);
+    }
+    public void OnClickAutoSignUpParticipant() => OnClickOpenContent(autoSignUpParticipantButton, autoSignUpParticipantContent);
+    public void OnClickManualSignUpParticipant() => OnClickOpenContent(manualSignUpParticipantButton, manualSignUpParticipantContent);
 
     // Info
     public void OnClickInfo_Plan()

@@ -11,6 +11,7 @@ public class Sign_Up : MonoBehaviour
     [SerializeField] Text login, password, password_verification;
     [SerializeField] Text firstName, lastName, headquarter, squad, position;
     [SerializeField] Toggle personalData, rules;
+    [SerializeField] Image scrollViewHq, scrollViewSquad, scrollViewPosition;
 
     public void SignIn()
     {
@@ -41,4 +42,15 @@ public class Sign_Up : MonoBehaviour
     {
         SceneManager.LoadSceneAsync("Start Login", LoadSceneMode.Single);
     }
+
+    // more buttons
+    void OpenMore(Image content)
+    {
+        if (content.gameObject.activeSelf == true)
+            content.gameObject.SetActive(false);
+        else content.gameObject.SetActive(true);
+    }
+    public void OpenMoreHq() => OpenMore(scrollViewHq);
+    public void OpenMorePosition() => OpenMore(scrollViewPosition);
+    public void OpenMoreSquad() => OpenMore(scrollViewSquad);
 }
