@@ -10,12 +10,12 @@ public class Poster : MonoBehaviour
     [SerializeField] ScrollRect scrollView;
     [SerializeField] Image headerMain, headerEvent, footer;
     [SerializeField] Image headerEvent_mainTitle, headerEvent_participantTitle, headerEvent_volunteerTitle;
-    [SerializeField] Image scrollViewMain, scrollViewEvent, scrollViewEvent_Participant, scrollViewEvent_Volunteer;
+    [SerializeField] Image scrollViewMain, scrollViewEvent, scrollViewEvent_Participant, scrollViewEvent_Volunteer, scrollViewInfo_EventPlan;
     [SerializeField] Button creatorsButton, whatBringOnButton, signUpButton, infoButton;
     [SerializeField] GameObject creatorsContent, whatBringOnContent, signUpContent, infoContent;
 
-    [SerializeField] Button autoSignUpParticipantButton, manualSignUpParticipantButton;
-    [SerializeField] GameObject autoSignUpParticipantContent, manualSignUpParticipantContent;
+    [SerializeField] Button autoSignUpParticipantButton, manualSignUpParticipantButton, autoSignUpVolunteerButton, manualSignUpVolunteerButton;
+    [SerializeField] GameObject autoSignUpParticipantContent, manualSignUpParticipantContent, autoSignUpVolunteerContent, manualSignUpVolunteerContent;
 
     public void OnClickAvatar() => SceneManager.LoadSceneAsync("Profile", LoadSceneMode.Single);
     public void OnClickEvent()
@@ -41,13 +41,13 @@ public class Poster : MonoBehaviour
             headerEvent_mainTitle.gameObject.SetActive(true);
             scrollViewEvent.gameObject.SetActive(true);
         }
-        // if (scrollViewEvent_Volunteer.activeself == true) // volunteer event window is opened
-        // {
-        //     headerEvent_volunteerTitle.gameObject.SetActive(false);
-        //     scrollViewEvent_Volunteer.gameObject.SetActive(false);
-        //     headerEvent_mainTitle.gameObject.SetActive(true);
-        //     scrollViewEvent.gameObject.SetActive(true);
-        // }
+        if (scrollViewEvent_Volunteer.gameObject.activeSelf == true) // volunteer event window is opened
+        {
+            headerEvent_volunteerTitle.gameObject.SetActive(false);
+            scrollViewEvent_Volunteer.gameObject.SetActive(false);
+            headerEvent_mainTitle.gameObject.SetActive(true);
+            scrollViewEvent.gameObject.SetActive(true);
+        }
     }
     public void FooterSwitch()
     {
@@ -91,20 +91,27 @@ public class Poster : MonoBehaviour
     public void OnClickSignUp_Participant()
     {
         scrollViewEvent.gameObject.SetActive(false);
+        headerEvent_mainTitle.gameObject.SetActive(false);
         scrollViewEvent_Participant.gameObject.SetActive(true);
+        headerEvent_participantTitle.gameObject.SetActive(true);
     }
     public void OnClickSignUp_Volunteer()
     {
         scrollViewEvent.gameObject.SetActive(false);
+        headerEvent_mainTitle.gameObject.SetActive(false);
         scrollViewEvent_Volunteer.gameObject.SetActive(true);
+        headerEvent_volunteerTitle.gameObject.SetActive(true);
     }
     public void OnClickAutoSignUpParticipant() => OnClickOpenContent(autoSignUpParticipantButton, autoSignUpParticipantContent);
     public void OnClickManualSignUpParticipant() => OnClickOpenContent(manualSignUpParticipantButton, manualSignUpParticipantContent);
+    public void OnClickAutoSignUpVolunteer() => OnClickOpenContent(autoSignUpVolunteerButton, autoSignUpVolunteerContent);
+    public void OnClickManualSignUpVolunteer() => OnClickOpenContent(manualSignUpVolunteerButton, manualSignUpVolunteerContent);
 
     // Info
-    public void OnClickInfo_Plan()
+    public void OnClickInfo_Plan() 
     {
-
+        scrollViewEvent.gameObject.SetActive(false);
+        scrollViewInfo_EventPlan.gameObject.SetActive(true);
     }
     public void OnClickInfo_Group()
     {
