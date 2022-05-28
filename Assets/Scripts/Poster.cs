@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 
 public class Poster : MonoBehaviour
 {
+    public static Poster Instance {get; set;}
     [SerializeField] ScrollRect scrollView;
     [SerializeField] Image headerMain, headerEvent, footer;
     [SerializeField] Image headerEvent_mainTitle, headerEvent_participantTitle, headerEvent_volunteerTitle;
@@ -16,6 +17,7 @@ public class Poster : MonoBehaviour
 
     [SerializeField] Button autoSignUpParticipantButton, manualSignUpParticipantButton, autoSignUpVolunteerButton, manualSignUpVolunteerButton;
     [SerializeField] GameObject autoSignUpParticipantContent, manualSignUpParticipantContent, autoSignUpVolunteerContent, manualSignUpVolunteerContent;
+    [SerializeField] GameObject photoLayoutContent, albumContent;
 
     public void OnClickAvatar() => SceneManager.LoadSceneAsync("Profile", LoadSceneMode.Single);
     public void OnClickEvent()
@@ -46,6 +48,13 @@ public class Poster : MonoBehaviour
             headerEvent_volunteerTitle.gameObject.SetActive(false);
             scrollViewEvent_Volunteer.gameObject.SetActive(false);
             headerEvent_mainTitle.gameObject.SetActive(true);
+            scrollViewEvent.gameObject.SetActive(true);
+        }
+        if (scrollViewInfo_EventPlan.gameObject.activeSelf == true) // event plan window is opened
+        {
+            headerEvent.gameObject.SetActive(false);
+            scrollViewInfo_EventPlan.gameObject.SetActive(false);
+            headerEvent.gameObject.SetActive(true);
             scrollViewEvent.gameObject.SetActive(true);
         }
     }
@@ -111,7 +120,9 @@ public class Poster : MonoBehaviour
     public void OnClickInfo_Plan() 
     {
         scrollViewEvent.gameObject.SetActive(false);
+        headerMain.gameObject.SetActive(false);
         scrollViewInfo_EventPlan.gameObject.SetActive(true);
+        headerEvent.gameObject.SetActive(true);
     }
     public void OnClickInfo_Group()
     {
@@ -119,6 +130,19 @@ public class Poster : MonoBehaviour
     }
     public void OnClickInfo_Photos()
     {
-
+        if (EventSystem.current.currentSelectedGameObject.GetComponent<Image>().isActiveAndEnabled == true)
+        {
+            EventSystem.current.currentSelectedGameObject.GetComponent<Image>().enabled = false;
+            EventSystem.current.currentSelectedGameObject.transform.GetChild(0).gameObject.SetActive(true);
+            photoLayoutContent.SetActive(true);
+            albumContent.SetActive(true);
+        }
+        else
+        {
+            EventSystem.current.currentSelectedGameObject.GetComponent<Image>().enabled = true;
+            EventSystem.current.currentSelectedGameObject.transform.GetChild(0).gameObject.SetActive(false);
+            photoLayoutContent.SetActive(false);
+            albumContent.SetActive(false);
+        }
     }
 }
