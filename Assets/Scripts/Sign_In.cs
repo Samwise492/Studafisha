@@ -10,29 +10,29 @@ public class Sign_In : MonoBehaviour
     [SerializeField] Button enterSignUpMenuButton;
     [SerializeField] Button continueButton;
     [SerializeField] Button amNotFromRSOButton;
-    public Text login, password;
+    public Text login;
+    public InputField password;
+    [SerializeField] Text errorText;
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
     string errorMessage = "";
 
-    // Buttons
+#region Buttons
     public void EnterToSignUp() => SceneManager.LoadSceneAsync("Start Reg 1", LoadSceneMode.Single);
     public void Disclaimer() => SceneManager.LoadSceneAsync("Poster", LoadSceneMode.Single);
-    public void Continue()
-    {
-        StartCoroutine(LoginEnumerator());
-
-        //SceneManager.LoadSceneAsync("Disclaimer", LoadSceneMode.Single);
-    }
+    public void Continue() => StartCoroutine(LoginEnumerator());
     public void NotFromRSO()
     {
+        Debug.Log("!");
+        UserData.Instance.login = "/Guest";
         SceneManager.LoadSceneAsync("Disclaimer", LoadSceneMode.Single);
     }
     public void ForgotPassword()
     {
 
     }
+#endregion
 
-    // MySQL
+#region SQL
     void ResetValues()
     {
         errorMessage = "";
@@ -41,11 +41,11 @@ public class Sign_In : MonoBehaviour
     }
     IEnumerator LoginEnumerator()
     {
-        errorMessage = "";
-
         WWWForm form = new WWWForm();
         form.AddField("login", login.text);
         form.AddField("password", password.text);
+        byte[] rawData = form.data;
+        Debug.Log(System.Text.Encoding.GetEncoding(1251).GetString(rawData)); // get text from form
 
         using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "login.php", form))
         {
@@ -61,8 +61,10 @@ public class Sign_In : MonoBehaviour
 
                 if (responseText.StartsWith("Success"))
                 {
+                    SceneManager.LoadSceneAsync("Disclaimer", LoadSceneMode.Single);
                     string[] dataChunks = responseText.Split('|');
                     login.text = dataChunks[1];
+                    UserData.Instance.login = login.text;
 
                     ResetValues();
                 }
@@ -72,5 +74,13 @@ public class Sign_In : MonoBehaviour
                 }
             }
         }
+        if (errorMessage != "")
+        {
+            Debug.Log("Can't log in");
+            errorText.text = errorMessage;
+        }
+        errorMessage = "";
+        yield break;
     }
+#endregion
 }

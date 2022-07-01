@@ -146,7 +146,7 @@ public class SC_LoginSystem : MonoBehaviour
         form.AddField("password1", registerPassword1);
         form.AddField("password2", registerPassword2);
 
-        using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "register.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "register_sc.php", form))
         {
             yield return www.SendWebRequest();
 
@@ -184,7 +184,7 @@ public class SC_LoginSystem : MonoBehaviour
         form.AddField("email", loginEmail);
         form.AddField("password", loginPassword);
 
-        using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "login.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "login_sc.php", form))
         {
             yield return www.SendWebRequest();
 

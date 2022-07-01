@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 
 public class Poster : MonoBehaviour
 {
     public static Poster Instance {get; set;}
-    [SerializeField] ScrollRect scrollView;
     [SerializeField] Image headerMain, headerEvent, footer;
     [SerializeField] Image headerEvent_mainTitle, headerEvent_participantTitle, headerEvent_volunteerTitle;
     [SerializeField] Image scrollViewMain, scrollViewEvent, scrollViewEvent_Participant, scrollViewEvent_Volunteer, scrollViewInfo_EventPlan;
@@ -18,14 +18,35 @@ public class Poster : MonoBehaviour
     [SerializeField] Button autoSignUpParticipantButton, manualSignUpParticipantButton, autoSignUpVolunteerButton, manualSignUpVolunteerButton;
     [SerializeField] GameObject autoSignUpParticipantContent, manualSignUpParticipantContent, autoSignUpVolunteerContent, manualSignUpVolunteerContent;
     [SerializeField] GameObject photoLayoutContent, albumContent;
+    string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
+    List<string> organizers = new List<string>();
+    List<string> organizerSquadIds = new List<string>(); // change to int
+    List<string> organizerSquads = new List<string>();
+    List<string> itemsToBring = new List<string>();
+    [SerializeField] GameObject creatorShell, itemToBringShell;
 
+    void Awake()
+    {
+        Instance = this;
+    }
+
+#region Buttons
     public void OnClickAvatar() => SceneManager.LoadSceneAsync("Profile", LoadSceneMode.Single);
-    public void OnClickEvent()
+    public void OnClickEvent(string[] info)
     {
         headerMain.gameObject.SetActive(false);
         scrollViewMain.gameObject.SetActive(false);
         headerEvent.gameObject.SetActive(true);
         scrollViewEvent.gameObject.SetActive(true);
+
+        var _event = scrollViewEvent.transform.GetChild(0).GetChild(0);
+        _event.GetChild(2).GetComponent<Text>().text = info[0]; // title
+        _event.GetChild(3).GetComponent<Text>().text = info[1]; // type
+        _event.GetChild(4).GetChild(1).GetComponent<Text>().text = info[3]; // description
+        _event.GetChild(5).GetChild(0).GetChild(0).GetComponent<Text>().text = info[9]; // address
+        StartCoroutine(OrganizersQuery(info[4], info[5], info[6], info[7]));
+        //StartCoroutine(OrganizerIdsQuery());
+        StartCoroutine(ItemsToBringQuery(info[0]));
     }
     public void OnClickBackToMenu()
     {
@@ -82,21 +103,32 @@ public class Poster : MonoBehaviour
         {
             button.GetComponent<Image>().enabled = false;
             button.transform.GetChild(0).gameObject.SetActive(true);
-            content.SetActive(true);
+            //content.SetActive(true);
+            StartCoroutine(RefreshContent(content, true));
         }
         else
         {
             button.GetComponent<Image>().enabled = true;
             button.transform.GetChild(0).gameObject.SetActive(false);
-            content.SetActive(false);
+            StartCoroutine(RefreshContent(content, false));
         }
+    }
+    IEnumerator RefreshContent(GameObject content, bool _true)
+    {
+        content.SetActive(_true);
+        yield return new WaitForEndOfFrame();
+        content.SetActive(!_true);
+        yield return new WaitForEndOfFrame();
+        content.SetActive(_true);
+        yield break;
     }
     public void OnClickCreators() => OnClickOpenContent(creatorsButton, creatorsContent);
     public void OnClickWhatBringOn() => OnClickOpenContent(whatBringOnButton, whatBringOnContent);
     public void OnClickSignUp() => OnClickOpenContent(signUpButton, signUpContent);
     public void OnClickInfo() => OnClickOpenContent(infoButton, infoContent);
+#endregion
 
-    // Sign Up
+#region SignUp
     public void OnClickSignUp_Participant()
     {
         scrollViewEvent.gameObject.SetActive(false);
@@ -115,8 +147,9 @@ public class Poster : MonoBehaviour
     public void OnClickManualSignUpParticipant() => OnClickOpenContent(manualSignUpParticipantButton, manualSignUpParticipantContent);
     public void OnClickAutoSignUpVolunteer() => OnClickOpenContent(autoSignUpVolunteerButton, autoSignUpVolunteerContent);
     public void OnClickManualSignUpVolunteer() => OnClickOpenContent(manualSignUpVolunteerButton, manualSignUpVolunteerContent);
+#endregion
 
-    // Info
+#region Info
     public void OnClickInfo_Plan() 
     {
         scrollViewEvent.gameObject.SetActive(false);
@@ -145,4 +178,108 @@ public class Poster : MonoBehaviour
             albumContent.SetActive(false);
         }
     }
+#endregion
+
+#region SQL
+    IEnumerator OrganizersQuery(string organizer1, string organizer2, string organizer3, string organizer4) //change to int
+    {
+        WWWForm form = new WWWForm();
+        if (organizer1 != null || organizer1 != "")
+            form.AddField("Organizer1_Id", organizer1);
+        if (organizer2 != null || organizer2 != "")
+            form.AddField("Organizer2_Id", organizer2);
+        if (organizer3 != null || organizer3 != "")
+            form.AddField("Organizer3_Id", organizer3);
+        if (organizer4 != null || organizer4 != "")
+            form.AddField("Organizer4_Id", organizer4);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "get_eventOrganizers.php", form))
+        {
+            yield return www.SendWebRequest();
+            string responseText = www.downloadHandler.text;
+            foreach(string organizer in responseText.Split('|'))
+            {
+                var splittedInfo = organizer.Split('ì');
+                if (splittedInfo[0] != "")
+                {
+                    organizers.Add(splittedInfo[0]);
+                    organizerSquadIds.Add(splittedInfo[1]);
+                }
+            }
+        }
+        StartCoroutine(OrganizerIdsQuery());
+        yield break;
+    }
+    IEnumerator OrganizerIdsQuery()
+    {
+        WWWForm form = new WWWForm();
+
+        switch (organizerSquadIds.Count)
+        {
+            case 0:
+                break;
+            case 1:
+                form.AddField("Organizer1_SquadId", organizerSquadIds[0]);
+                break;
+            case 2:
+                form.AddField("Organizer1_SquadId", organizerSquadIds[0]);
+                form.AddField("Organizer2_SquadId", organizerSquadIds[1]);
+                break;
+            case 3:
+                form.AddField("Organizer1_SquadId", organizerSquadIds[0]);
+                form.AddField("Organizer2_SquadId", organizerSquadIds[1]);
+                form.AddField("Organizer3_SquadId", organizerSquadIds[2]);
+                break;
+            case 4:
+                form.AddField("Organizer1_SquadId", organizerSquadIds[0]);
+                form.AddField("Organizer2_SquadId", organizerSquadIds[1]);
+                form.AddField("Organizer3_SquadId", organizerSquadIds[2]);
+                form.AddField("Organizer4_SquadId", organizerSquadIds[3]);
+                break;
+        }
+        
+        using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "get_eventOrganizers.php", form))
+        {
+            yield return www.SendWebRequest();
+            string responseText = www.downloadHandler.text;
+            foreach(string squad in responseText.Split('|'))
+            {
+                organizerSquads.Add(squad);
+            }
+        }
+
+        for (var i = 0; i < organizers.Count; i++)
+        {
+            var creator = Instantiate(creatorShell, creatorsContent.transform);
+            creator.transform.GetChild(1).GetComponent<Text>().text = organizers[i];
+            creator.transform.GetChild(2).GetComponent<Text>().text = organizerSquads[i];
+        }
+        yield break;
+    }
+    IEnumerator ItemsToBringQuery(string eventName)
+    {       
+        WWWForm form = new WWWForm();
+        form.AddField("EventName", eventName);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "get_eventItems.php", form))
+        {
+            yield return www.SendWebRequest();
+            string responseText = www.downloadHandler.text;
+            foreach(string squad in responseText.Split(' '))
+            {
+                itemsToBring.Add(squad);
+            }
+        }
+
+        for (var i = 0; i < itemsToBring.Count; i++)
+        {
+            if (itemsToBring[i] != "")
+            {
+                var itemToBring = Instantiate(itemToBringShell, whatBringOnContent.transform);
+                itemToBring.transform.GetChild(0).GetComponent<Text>().text = itemsToBring[i];
+            }
+        }
+        yield break;
+    }
+#endregion
 }
