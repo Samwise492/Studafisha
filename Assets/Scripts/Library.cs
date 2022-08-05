@@ -3,48 +3,81 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 
 public class Library : MonoBehaviour
 {
-    [SerializeField] ScrollRect scrollViewMain, scrollViewBuild, scrollViewTeachers, scrollViewPins;
+    [SerializeField] ScrollRect scrollViewMain;
     [SerializeField] Image header;
-    [SerializeField] Button labourProjectsButton;
-    [SerializeField] GameObject labourProjectsContent;
+    [SerializeField] GameObject articleShell;
+    [SerializeField] Button pdfButton1, pdfButton2;
+    string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
+    string articleText;
+    string link1, link2;
 
-    void OnClickOpenButton(ScrollRect viewToOn)
+#region Buttons
+    public void OnClickOpenArticle()
     {
+        pdfButton1.gameObject.SetActive(false);
+        pdfButton2.gameObject.SetActive(false);
+
         header.transform.GetChild(0).gameObject.SetActive(false); // avatar
         header.transform.GetChild(1).gameObject.SetActive(true); // back button
-        scrollViewMain.gameObject.SetActive(false);
-        viewToOn.gameObject.SetActive(true);
-    }
-    void OnClickOpenContent(Button button, GameObject content)
-    {
-        if (button.GetComponent<Image>().isActiveAndEnabled == true)
+        foreach (Transform child in articleShell.transform.parent)
         {
-            button.GetComponent<Image>().enabled = false;
-            button.transform.GetChild(0).gameObject.SetActive(true);
-            content.SetActive(true);
+            if (child.gameObject != articleShell)
+                child.gameObject.SetActive(false);
         }
-        else
-        {
-            button.GetComponent<Image>().enabled = true;
-            button.transform.GetChild(0).gameObject.SetActive(false);
-            content.SetActive(false);
-        }
+        articleShell.SetActive(true);
+
+        articleShell.gameObject.SetActive(true);
+        StartCoroutine(LibraryArticleQuery(EventSystem.current.currentSelectedGameObject.transform.GetChild(0).name.Split(' ')[1]));
     }
-    public void OnClickOpenBuild() => OnClickOpenButton(scrollViewBuild);
-    public void OnClickOpenTeachers() => OnClickOpenButton(scrollViewTeachers);
-    public void OnClickOpenPins() => OnClickOpenButton(scrollViewPins);
-    public void OnClickLaborProjects() => OnClickOpenContent(labourProjectsButton, labourProjectsContent);
+    public void OnClickOpenPDF1() => Application.OpenURL(link1);
+    public void OnClickOpenPDF2() => Application.OpenURL(link2);
 
     public void OnClickBack()
     {
         header.transform.GetChild(0).gameObject.SetActive(true); // avatar
         header.transform.GetChild(1).gameObject.SetActive(false); // back button
-        scrollViewMain.gameObject.SetActive(true);
-        scrollViewBuild.gameObject.SetActive(false);
-        scrollViewTeachers.gameObject.SetActive(false);
-        scrollViewPins.gameObject.SetActive(false);
+        foreach (Transform child in articleShell.transform.parent)
+        {
+            if (child.gameObject != articleShell)
+                child.gameObject.SetActive(true);
+        }
+        articleShell.SetActive(false);
     }
+#endregion
+
+#region SQL
+    IEnumerator LibraryArticleQuery(string id)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("Id", id);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "get_libraryArticleData.php", form))
+        {
+            yield return www.SendWebRequest();
+            string responseText = www.downloadHandler.text;
+            Debug.Log(responseText);
+
+            articleText = responseText.Split('|')[0];
+            link1 = responseText.Split('|')[1];
+            link2 = responseText.Split('|')[2];
+        }
+
+        articleShell.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = articleText;
+        if (link1 != "")
+        {
+            pdfButton1.gameObject.SetActive(true);
+            if (link2 != "")
+            {
+                pdfButton2.gameObject.SetActive(true);
+            }
+        }
+
+        yield break;
+    }
+#endregion
+
 }

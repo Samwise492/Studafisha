@@ -22,7 +22,6 @@ public class Sign_In : MonoBehaviour
     public void Continue() => StartCoroutine(LoginEnumerator());
     public void NotFromRSO()
     {
-        Debug.Log("!");
         UserData.Instance.login = "/Guest";
         SceneManager.LoadSceneAsync("Disclaimer", LoadSceneMode.Single);
     }

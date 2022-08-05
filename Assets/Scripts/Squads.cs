@@ -5,15 +5,20 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
+using System.Linq;
 
 public class Squads : MonoBehaviour
 {
+    [SerializeField] ScrollRect scrollViewMenu, scrollViewSquad;
+    [SerializeField] GameObject headerMain, headerSquad;
     [SerializeField] Button archiveButton;
-    [SerializeField] GameObject archiveContent;
+    [SerializeField] GameObject archiveContent, historyContent, historicalPeopleContent;
+    Dictionary<string, string> historicalPeople = new Dictionary<string, string>();
+    [SerializeField] Button vkButton, mailButton;
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
     List<string> squads = new List<string>();
     List<string> hqs = new List<string>();
-    [SerializeField] GameObject squadShell;
+    [SerializeField] GameObject squadShell, historicalPersonShell;
     [SerializeField] GameObject nest;
 
     void Start()
@@ -39,6 +44,27 @@ public class Squads : MonoBehaviour
         }
     }
     public void OnClickArchive() => OnClickOpenContent(archiveButton, archiveContent);
+    public void OnClickOpenHistory() 
+    {
+        if (SquadInitialisation.Instance.history != "")
+        {
+            historyContent.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = SquadInitialisation.Instance.history;
+            foreach(Transform child in scrollViewSquad.transform.GetChild(0).GetChild(0))
+            {
+                if (child != historyContent)
+                    child.gameObject.SetActive(false);
+            }
+            historyContent.SetActive(true);
+        }
+    }
+    public void OnClickOpenHistoricalPeople() 
+    {
+        StartCoroutine(SquadHistoricalPeopleQuery());
+    }
+    public void OnClickOpenHeadquarter()
+    {   
+        PosterTransition.Instance.TransitToHqs(EventSystem.current.currentSelectedGameObject.transform.GetChild(1).GetComponent<Text>().text);
+    }
     public void FooterSwitch()
     {
         switch (EventSystem.current.currentSelectedGameObject.name)
@@ -57,6 +83,38 @@ public class Squads : MonoBehaviour
                 break;
         }   
     }
+    public void OnClickBackToMenu()
+    {
+        if (historyContent.activeSelf == false && historicalPeopleContent.activeSelf == false)
+        {
+            headerSquad.gameObject.SetActive(false);
+            scrollViewSquad.gameObject.SetActive(false);
+            headerMain.gameObject.SetActive(true);
+            scrollViewMenu.gameObject.SetActive(true);
+        }
+        else if (historyContent.activeSelf == true)
+        {
+            foreach(Transform child in scrollViewSquad.transform.GetChild(0).GetChild(0))
+            {
+                if (child != historyContent)
+                    child.gameObject.SetActive(true);
+            }
+            historyContent.SetActive(false);
+            historicalPeopleContent.SetActive(false);
+        }
+        else if (historicalPeopleContent.activeSelf == true)
+        {
+            foreach(Transform child in scrollViewSquad.transform.GetChild(0).GetChild(0))
+            {
+                if (child != historicalPeopleContent)
+                    child.gameObject.SetActive(true);
+            }
+            historyContent.SetActive(false);
+            historicalPeopleContent.SetActive(false);
+        }
+    }
+    public void OnClickOpenVK() => Application.OpenURL(SquadInitialisation.Instance.vk);
+    public void OnClickOpenMail() => Application.OpenURL(SquadInitialisation.Instance.mail);
 #endregion
 
 #region SQL
@@ -92,13 +150,79 @@ public class Squads : MonoBehaviour
         {
             if (squads[i] != "")
             {
-                Debug.Log(hqs.Count);
                 var squad = Instantiate(squadShell, nest.transform);
                 squad.transform.GetChild(0).GetComponent<Text>().text = squads[i];
                 squad.transform.GetChild(1).GetComponent<Text>().text = hqs[i];
+                squad.GetComponent<Button>().onClick.AddListener(InitialiseSquad);
             }
         }
         yield break;
+    } 
+    IEnumerator SquadHistoricalPeopleQuery()
+    {
+        historicalPeople.Clear();
+        foreach (Transform child in historicalPeopleContent.transform)
+        {
+            Destroy(child);
+        }
+
+        WWWForm squadForm = new WWWForm();
+        squadForm.AddField("Type", SquadInitialisation.Instance.type);
+        squadForm.AddField("Name", SquadInitialisation.Instance._name);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "get_squad_historicalPeople.php", squadForm))
+        {
+            yield return www.SendWebRequest();
+            string responseText = www.downloadHandler.text;
+            
+            for (var i = 0; i < responseText.Split('|').Length; i+=2)
+            {
+                if (responseText.Split('|')[i] != "")
+                {
+                    if (i+1 < responseText.Split('|').Length)
+                    {
+                        historicalPeople.Add(responseText.Split('|')[i], responseText.Split('|')[i+1]);
+                    }
+                }
+            }
+        }
+        
+        if (historicalPeople.Count > 0)
+        {
+            for (var i = 0; i < historicalPeople.Count; i++)
+            {
+                var historicalPerson = Instantiate(historicalPersonShell, historicalPeopleContent.transform);
+                historicalPerson.transform.GetChild(3).GetComponent<Text>().text = historicalPeople.ElementAt(i).Key;
+                historicalPerson.transform.GetChild(2).GetChild(0).GetComponent<Text>().text = historicalPeople.ElementAt(i).Value;
+            }
+
+            foreach(Transform child in scrollViewSquad.transform.GetChild(0).GetChild(0))
+            {
+                if (child != historicalPeopleContent)
+                    child.gameObject.SetActive(false);
+            }
+            historicalPeopleContent.SetActive(true);
+        }
+
+        yield break;
     }
 #endregion
+    void InitialiseSquad()
+    {
+        headerMain.gameObject.SetActive(false);
+        scrollViewMenu.gameObject.SetActive(false);
+        headerSquad.gameObject.SetActive(true);
+        scrollViewSquad.gameObject.SetActive(true);
+        
+        SquadInitialisation.Instance._name = EventSystem.current.currentSelectedGameObject.transform.GetChild(0).GetComponent<Text>().text.Split(' ')[1];
+        SquadInitialisation.Instance.type = EventSystem.current.currentSelectedGameObject.transform.GetChild(0).GetComponent<Text>().text.Split(' ')[0];
+        SquadInitialisation.Instance.hq = EventSystem.current.currentSelectedGameObject.transform.GetChild(1).GetComponent<Text>().text;
+        StartCoroutine(SquadInitialisation.Instance.InitialiseSquadQuery());
+        if (SquadInitialisation.Instance.vk == "" && SquadInitialisation.Instance.mail == "")
+            vkButton.transform.parent.gameObject.SetActive(false);
+        if (SquadInitialisation.Instance.vk == "")
+            vkButton.gameObject.SetActive(false);
+        if (SquadInitialisation.Instance.mail == "")
+            mailButton.gameObject.SetActive(false);  
+    }
 }

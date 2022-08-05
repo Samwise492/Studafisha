@@ -7950,6 +7950,7 @@ MonoBehaviour:
   position: 
   hq: 
   squad: 
+  userId: 
 --- !u!4 &1130379603
 Transform:
   m_ObjectHideFlags: 0

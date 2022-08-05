@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Disclaimer.unity
     guid: 1774f1a76ff32b046b2a5973418874ce
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Library.unity
     guid: 23db3614c4fc18447bb9972828f38372
   - enabled: 1
@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Profile.unity
     guid: d68510a1f6201a146a4f61547c553d06
+  - enabled: 1
+    path: Assets/Scenes/Headquarters.unity
+    guid: 154c6a43c2fe46d409ea090e2efdb8a0
   m_configObjects: {}

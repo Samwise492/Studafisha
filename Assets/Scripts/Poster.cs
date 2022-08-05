@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
+using System.Linq;
 
 public class Poster : MonoBehaviour
 {
@@ -15,19 +16,22 @@ public class Poster : MonoBehaviour
     [SerializeField] Button creatorsButton, whatBringOnButton, signUpButton, infoButton;
     [SerializeField] GameObject creatorsContent, whatBringOnContent, signUpContent, infoContent;
 
-    [SerializeField] Button autoSignUpParticipantButton, manualSignUpParticipantButton, autoSignUpVolunteerButton, manualSignUpVolunteerButton;
-    [SerializeField] GameObject autoSignUpParticipantContent, manualSignUpParticipantContent, autoSignUpVolunteerContent, manualSignUpVolunteerContent;
+    public string eventTitle, eventId;
+    public bool isVolunteer;
     [SerializeField] GameObject photoLayoutContent, albumContent;
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
     List<string> organizers = new List<string>();
     List<string> organizerSquadIds = new List<string>(); // change to int
     List<string> organizerSquads = new List<string>();
+    List<string> organizerPhoneNumbers = new List<string>();
     List<string> itemsToBring = new List<string>();
     [SerializeField] GameObject creatorShell, itemToBringShell;
 
     void Awake()
     {
         Instance = this;
+        if (UserData.Instance.login == "/Guest")
+            signUpButton.gameObject.SetActive(false);
     }
 
 #region Buttons
@@ -40,12 +44,13 @@ public class Poster : MonoBehaviour
         scrollViewEvent.gameObject.SetActive(true);
 
         var _event = scrollViewEvent.transform.GetChild(0).GetChild(0);
-        _event.GetChild(2).GetComponent<Text>().text = info[0]; // title
+        eventTitle = info[0];
+        eventId = info[16];
+        _event.GetChild(2).GetComponent<Text>().text = eventTitle; // title
         _event.GetChild(3).GetComponent<Text>().text = info[1]; // type
         _event.GetChild(4).GetChild(1).GetComponent<Text>().text = info[3]; // description
-        _event.GetChild(5).GetChild(0).GetChild(0).GetComponent<Text>().text = info[9]; // address
+        _event.GetChild(5).GetChild(0).GetComponent<Text>().text = info[9]; // address
         StartCoroutine(OrganizersQuery(info[4], info[5], info[6], info[7]));
-        //StartCoroutine(OrganizerIdsQuery());
         StartCoroutine(ItemsToBringQuery(info[0]));
     }
     public void OnClickBackToMenu()
@@ -97,13 +102,18 @@ public class Poster : MonoBehaviour
                 break;
         }   
     }
+    public void OnClickCall()
+    {
+        var organizer = EventSystem.current.currentSelectedGameObject.transform.parent.GetChild(1).GetComponent<Text>().text;
+        int id = organizers.IndexOf(organizer);
+        Application.OpenURL("tel://" + organizerPhoneNumbers[id]);
+    }
     void OnClickOpenContent(Button button, GameObject content)
     {
         if (button.GetComponent<Image>().isActiveAndEnabled == true)
         {
             button.GetComponent<Image>().enabled = false;
             button.transform.GetChild(0).gameObject.SetActive(true);
-            //content.SetActive(true);
             StartCoroutine(RefreshContent(content, true));
         }
         else
@@ -135,6 +145,9 @@ public class Poster : MonoBehaviour
         headerEvent_mainTitle.gameObject.SetActive(false);
         scrollViewEvent_Participant.gameObject.SetActive(true);
         headerEvent_participantTitle.gameObject.SetActive(true);
+
+        scrollViewEvent_Participant.transform.GetChild(0).GetChild(0).GetChild(4).GetComponent<Text>().text = eventTitle; // title
+        isVolunteer = false;
     }
     public void OnClickSignUp_Volunteer()
     {
@@ -142,11 +155,10 @@ public class Poster : MonoBehaviour
         headerEvent_mainTitle.gameObject.SetActive(false);
         scrollViewEvent_Volunteer.gameObject.SetActive(true);
         headerEvent_volunteerTitle.gameObject.SetActive(true);
+
+        scrollViewEvent_Volunteer.transform.GetChild(0).GetChild(0).GetChild(4).GetComponent<Text>().text = eventTitle; // title
+        isVolunteer = true;
     }
-    public void OnClickAutoSignUpParticipant() => OnClickOpenContent(autoSignUpParticipantButton, autoSignUpParticipantContent);
-    public void OnClickManualSignUpParticipant() => OnClickOpenContent(manualSignUpParticipantButton, manualSignUpParticipantContent);
-    public void OnClickAutoSignUpVolunteer() => OnClickOpenContent(autoSignUpVolunteerButton, autoSignUpVolunteerContent);
-    public void OnClickManualSignUpVolunteer() => OnClickOpenContent(manualSignUpVolunteerButton, manualSignUpVolunteerContent);
 #endregion
 
 #region Info
@@ -204,6 +216,7 @@ public class Poster : MonoBehaviour
                 {
                     organizers.Add(splittedInfo[0]);
                     organizerSquadIds.Add(splittedInfo[1]);
+                    organizerPhoneNumbers.Add(splittedInfo[2]);
                 }
             }
         }
@@ -253,6 +266,7 @@ public class Poster : MonoBehaviour
             var creator = Instantiate(creatorShell, creatorsContent.transform);
             creator.transform.GetChild(1).GetComponent<Text>().text = organizers[i];
             creator.transform.GetChild(2).GetComponent<Text>().text = organizerSquads[i];
+            creator.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(OnClickCall);
         }
         yield break;
     }

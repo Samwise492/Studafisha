@@ -7,6 +7,7 @@ public class UserData : MonoBehaviour
 {
     public static UserData Instance { get; set; }
     public string login, lastName, firstName, position, hq, squad;
+    public string userId;
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
 
     void Awake()
@@ -24,7 +25,6 @@ public class UserData : MonoBehaviour
 
             if (login == "/Guest")
             {
-                Debug.Log("got ya");
                 lastName = "";
                 firstName = "Гость";
                 position = "–";
@@ -43,11 +43,12 @@ public class UserData : MonoBehaviour
                     yield return www.SendWebRequest();
                     string responseText = www.downloadHandler.text;
 
-                    lastName = responseText.Split(';')[0];
-                    firstName = responseText.Split(';')[1];
-                    position = responseText.Split(';')[2];
-                    squad = responseText.Split(';')[3].Split('|')[0] + " " + responseText.Split(';')[3].Split('|')[1];
-                    hq = responseText.Split(';')[4];
+                    userId = responseText.Split(';')[0];
+                    lastName = responseText.Split(';')[1];
+                    firstName = responseText.Split(';')[2];
+                    position = responseText.Split(';')[3];
+                    squad = responseText.Split(';')[4].Split('|')[0] + " " + responseText.Split(';')[4].Split('|')[1];
+                    hq = responseText.Split(';')[5];
                 }
 
                 yield break;
