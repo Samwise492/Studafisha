@@ -12,13 +12,16 @@ public class PageSwiper : MonoBehaviour, IDragHandler, IEndDragHandler
     }
     public void OnEndDrag(PointerEventData data)
     {
-        if (SceneManager.GetActiveScene().name == "Headquarters")
-        {
-            SceneManager.LoadSceneAsync("Squads", LoadSceneMode.Single);
-        }
-        else if (SceneManager.GetActiveScene().name == "Squads")
-        {
-            SceneManager.LoadSceneAsync("Headquarters", LoadSceneMode.Single);
+        if (this.transform.GetChild(0).gameObject.activeSelf)
+            {
+            if (SceneManager.GetActiveScene().name == "Headquarters")
+            {
+                SceneManager.LoadSceneAsync("Squads", LoadSceneMode.Single);
+            }
+            else if (SceneManager.GetActiveScene().name == "Squads")
+            {
+                SceneManager.LoadSceneAsync("Headquarters", LoadSceneMode.Single);
+            }
         }
     }
 }

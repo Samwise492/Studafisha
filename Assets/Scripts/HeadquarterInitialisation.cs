@@ -321,8 +321,8 @@ public class HeadquarterInitialisation : MonoBehaviour
                     break;
             }
 
-            hqNest.transform.GetChild(1).GetComponent<Text>().text = "Штаб " + _name;
-            hqNest.transform.GetChild(2).GetChild(5).GetChild(0).GetComponent<Text>().text = address;
+            hqNest.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Штаб " + _name;
+            hqNest.transform.GetChild(0).GetChild(1).GetChild(5).GetChild(0).GetComponent<Text>().text = address;
             CreateStaffShells();
             StartCoroutine(RefreshContent(staffNest, true));
         }

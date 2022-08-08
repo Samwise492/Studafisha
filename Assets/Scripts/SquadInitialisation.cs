@@ -197,10 +197,10 @@ public class SquadInitialisation : MonoBehaviour
                     break;
             }
 
-            squadNest.transform.GetChild(1).GetComponent<Text>().text = type + " " + _name;
-            squadNest.transform.GetChild(2).GetComponent<Text>().text = hq;
-            squadNest.transform.GetChild(3).GetChild(5).GetChild(0).GetChild(1).GetComponent<Text>().text = hq;
-            squadNest.transform.GetChild(3).GetChild(6).GetChild(0).GetComponent<Text>().text = address;
+            squadNest.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = type + " " + _name;
+            squadNest.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>().text = hq;
+            squadNest.transform.GetChild(0).GetChild(1).GetChild(5).GetChild(0).GetChild(1).GetComponent<Text>().text = hq;
+            squadNest.transform.GetChild(0).GetChild(1).GetChild(6).GetChild(0).GetComponent<Text>().text = address;
             CreateStaffShells();
             StartCoroutine(RefreshContent(staffNest, true));
         }
