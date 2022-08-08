@@ -500,8 +500,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Squads, Assembly-CSharp
+      - m_Target: {fileID: 839790473}
+        m_TargetAssemblyTypeName: Headquarters, Assembly-CSharp
         m_MethodName: FooterSwitch
         m_Mode: 1
         m_Arguments:
@@ -1657,8 +1657,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Squads, Assembly-CSharp
+      - m_Target: {fileID: 839790473}
+        m_TargetAssemblyTypeName: Headquarters, Assembly-CSharp
         m_MethodName: FooterSwitch
         m_Mode: 1
         m_Arguments:
@@ -1725,7 +1725,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &646141683
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1790,8 +1790,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Squads, Assembly-CSharp
+      - m_Target: {fileID: 839790473}
+        m_TargetAssemblyTypeName: Headquarters, Assembly-CSharp
         m_MethodName: FooterSwitch
         m_Mode: 1
         m_Arguments:
@@ -5195,8 +5195,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Squads, Assembly-CSharp
+      - m_Target: {fileID: 839790473}
+        m_TargetAssemblyTypeName: Headquarters, Assembly-CSharp
         m_MethodName: FooterSwitch
         m_Mode: 1
         m_Arguments:
