@@ -17,8 +17,9 @@ public class Squads : MonoBehaviour
     [SerializeField] Button vkButton, mailButton;
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
     List<string> squads = new List<string>();
+    List<string> squadCities = new List<string>();
     List<string> hqs = new List<string>();
-    [SerializeField] GameObject squadShell, historicalPersonShell;
+    [SerializeField] GameObject squadShell, historicalPersonShell, dividerShell;
     [SerializeField] GameObject nest;
 
     void Start()
@@ -127,9 +128,13 @@ public class Squads : MonoBehaviour
         {
             yield return www.SendWebRequest();
             string responseText = www.downloadHandler.text;
-            foreach(string squad in responseText.Split('|'))
+            for (int i = 0; i < responseText.Split('|').Length; i+=2)
             {
-                squads.Add(squad);
+                if (responseText.Split('|')[i] != "")
+                {
+                    squadCities.Add(responseText.Split('|')[i]);
+                    squads.Add(responseText.Split('|')[i+1]);
+                }
             }
         }
 
@@ -146,6 +151,7 @@ public class Squads : MonoBehaviour
             }
         }
 
+        List<GameObject> instantiatedSquads = new List<GameObject>();
         for (var i = 0; i < squads.Count; i++)
         {
             if (squads[i] != "")
@@ -154,8 +160,12 @@ public class Squads : MonoBehaviour
                 squad.transform.GetChild(0).GetComponent<Text>().text = squads[i];
                 squad.transform.GetChild(1).GetComponent<Text>().text = hqs[i];
                 squad.GetComponent<Button>().onClick.AddListener(InitialiseSquad);
+
+                instantiatedSquads.Add(squad);
             }
         }
+        SortSquads(instantiatedSquads);
+
         yield break;
     } 
     IEnumerator SquadHistoricalPeopleQuery()
@@ -224,5 +234,37 @@ public class Squads : MonoBehaviour
             vkButton.gameObject.SetActive(false);
         if (SquadInitialisation.Instance.mail == "")
             mailButton.gameObject.SetActive(false);  
+    }
+    void SortSquads(List<GameObject> _squads)
+    {
+        // instantiate dividers
+        int uniqueCitiesNumber = (from x in squadCities select x).Distinct().Count();
+        List<string> addedCities = new List<string>();
+        List<GameObject> dividers = new List<GameObject>();
+
+        for (int i = 0; i < uniqueCitiesNumber; i++)
+        {
+            var divider = Instantiate(dividerShell, nest.transform);
+            dividers.Add(divider);
+
+            for (int j = 0; j < squadCities.Count; j++)
+            {
+                if (!addedCities.Contains(squadCities[j]))
+                    divider.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = squadCities[j];
+            }
+            addedCities.Add(divider.transform.GetChild(0).GetChild(0).GetComponent<Text>().text);
+        }
+
+        // sort
+        foreach (var divider in dividers)
+        {
+            for (int i = 0; i < squadCities.Count; i++)
+            {
+                if (squadCities[i] == divider.transform.GetChild(0).GetChild(0).GetComponent<Text>().text)
+                {
+                    _squads[i].transform.SetParent(divider.transform.GetChild(1));
+                }
+            }
+        }
     }
 }

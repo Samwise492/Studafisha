@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class Library : MonoBehaviour
 {
@@ -46,6 +47,24 @@ public class Library : MonoBehaviour
                 child.gameObject.SetActive(true);
         }
         articleShell.SetActive(false);
+    }
+    public void FooterSwitch()
+    {
+        switch (EventSystem.current.currentSelectedGameObject.name)
+        {
+            case "Library":
+                SceneManager.LoadSceneAsync("Library", LoadSceneMode.Single);
+                break;
+            case "Poster":
+                SceneManager.LoadSceneAsync("Poster", LoadSceneMode.Single);
+                break;
+            case "Squads":
+                SceneManager.LoadSceneAsync("Squads", LoadSceneMode.Single);
+                break;
+            case "Shop":
+                SceneManager.LoadSceneAsync("Shop", LoadSceneMode.Single);
+                break;
+        }   
     }
 #endregion
 

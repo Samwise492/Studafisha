@@ -669,7 +669,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 839790473}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Headquarters, Assembly-CSharp
         m_MethodName: FooterSwitch
         m_Mode: 1
@@ -733,7 +733,7 @@ GameObject:
   - component: {fileID: 294871294}
   - component: {fileID: 294871295}
   m_Layer: 5
-  m_Name: Scroll View Hq
+  m_Name: Scroll View All
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1240,7 +1240,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 839790473}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Headquarters, Assembly-CSharp
         m_MethodName: OnClickBackToMenu
         m_Mode: 1
@@ -1373,7 +1373,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 839790473}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Headquarters, Assembly-CSharp
         m_MethodName: FooterSwitch
         m_Mode: 1
@@ -1506,7 +1506,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 839790473}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Headquarters, Assembly-CSharp
         m_MethodName: FooterSwitch
         m_Mode: 1
@@ -1569,7 +1569,7 @@ GameObject:
   - component: {fileID: 650117959}
   - component: {fileID: 650117958}
   m_Layer: 5
-  m_Name: Viewport hq
+  m_Name: Viewport all
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1728,7 +1728,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 839790473}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Headquarters, Assembly-CSharp
         m_MethodName: OnClickOpenHistory
         m_Mode: 1
@@ -2065,10 +2065,10 @@ GameObject:
   - component: {fileID: 839790476}
   - component: {fileID: 839790475}
   - component: {fileID: 839790474}
-  - component: {fileID: 839790473}
   - component: {fileID: 839790480}
+  - component: {fileID: 839790473}
   m_Layer: 5
-  m_Name: CanvasHq
+  m_Name: CanvasAll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2083,19 +2083,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 839790472}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a34905691600dc84e9c6ac300ecab691, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a60e43e067f56f439cdbbb5e27b6d2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollViewMenu: {fileID: 1720789211}
-  scrollViewHeadquarter: {fileID: 294871294}
-  headerMain: {fileID: 1723270976}
-  headerHeadquarter: {fileID: 1300456105}
-  historyButton: {fileID: 658047280}
-  historyContent: {fileID: 314551613}
-  vkButton: {fileID: 1311314356}
-  mailButton: {fileID: 1228671773}
-  headquarterShell: {fileID: 948295902845137449, guid: 1a5be12bf1c32684aa167a782f9634ef, type: 3}
-  nest: {fileID: 1420034506}
 --- !u!114 &839790474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3016,7 +3006,7 @@ GameObject:
   - component: {fileID: 1300456107}
   - component: {fileID: 1300456106}
   m_Layer: 5
-  m_Name: Header Hq
+  m_Name: Header All
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4992,7 +4982,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 839790473}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Headquarters, Assembly-CSharp
         m_MethodName: FooterSwitch
         m_Mode: 1
