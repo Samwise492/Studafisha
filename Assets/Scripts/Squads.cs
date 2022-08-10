@@ -64,7 +64,8 @@ public class Squads : MonoBehaviour
     }
     public void OnClickOpenHeadquarter()
     {   
-        PosterTransition.Instance.TransitToHqs(EventSystem.current.currentSelectedGameObject.transform.GetChild(1).GetComponent<Text>().text);
+        PosterTransition.Instance.TransitToHqsViaSquad
+        (EventSystem.current.currentSelectedGameObject.transform.GetChild(1).GetComponent<Text>().text);
     }
     public void FooterSwitch()
     {

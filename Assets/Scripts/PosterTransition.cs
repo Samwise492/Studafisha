@@ -19,11 +19,24 @@ public class PosterTransition : MonoBehaviour
         squadCanvas = GameObject.FindObjectOfType<Squads>();
         squadCamera = GameObject.FindObjectOfType<Camera>();
     }
-    public void TransitToHqs(string hqName)
+
+    // Transitions
+    public void TransitToHqsViaSquad(string hqName)
     {
-        StartCoroutine(LoadScene("Headquarters", hqName));   
+        StartCoroutine(LoadScene("Headquarters", hqName, LoadSceneMode.Additive));   
         StartCoroutine(UnloadScene());   
     }
+    public void TransitToHq(string hqName)
+    {
+        StartCoroutine(LoadScene("Headquarters", hqName, LoadSceneMode.Single));   
+        Debug.Log("hq " + hqName); 
+    }
+    public void TransitToSquad(string squadName)
+    {
+        StartCoroutine(LoadScene("Squads", squadName, LoadSceneMode.Single));  
+        Debug.Log("sq " + squadName);  
+    }
+
     public void SquadSceneHandler(bool _switch) // _switch(true) = turn on; _switch(off) = turn off
     {
         if (_switch == true)
@@ -37,26 +50,52 @@ public class PosterTransition : MonoBehaviour
             squadCamera.gameObject.SetActive(false);
         }
     }
-    IEnumerator LoadScene(string sceneName, string hqName)
+    
+    // Scene management
+    IEnumerator LoadScene(string sceneName, string entityName, LoadSceneMode sceneMode)
     {
-        SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        if (sceneMode == LoadSceneMode.Additive)
+            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        else if (sceneMode == LoadSceneMode.Single)
+            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         yield return new WaitForSeconds(0.1f);
 
-        SquadSceneHandler(false);
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+        if (sceneMode == LoadSceneMode.Additive)
+        {
+            SquadSceneHandler(false);
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+        }
 
-        var hqCanvas = GameObject.FindObjectOfType<Headquarters>();
+        if (sceneName == "Headquarters")
+        {
+            var hqCanvas = GameObject.FindObjectOfType<Headquarters>();
 
-        // switch scroll views
-        hqCanvas.transform.GetChild(0).gameObject.SetActive(false);
-        hqCanvas.transform.GetChild(1).gameObject.SetActive(true);
+            // switch scroll views
+            hqCanvas.transform.GetChild(0).gameObject.SetActive(false);
+            hqCanvas.transform.GetChild(1).gameObject.SetActive(true);
 
-        // switch headers
-        hqCanvas.transform.GetChild(2).gameObject.SetActive(false);
-        hqCanvas.transform.GetChild(3).gameObject.SetActive(true);
+            // switch headers
+            hqCanvas.transform.GetChild(2).gameObject.SetActive(false);
+            hqCanvas.transform.GetChild(3).gameObject.SetActive(true);
 
-        HeadquarterInitialisation.Instance._name = hqName;
-        StartCoroutine(HeadquarterInitialisation.Instance.InitialiseHeadquarterQuery());
+            HeadquarterInitialisation.Instance._name = entityName;
+            StartCoroutine(HeadquarterInitialisation.Instance.InitialiseHeadquarterQuery());
+        }
+        else if (sceneName == "Squads")
+        {
+            var squadCanvas = GameObject.FindObjectOfType<Squads>();
+
+            // switch scroll views
+            squadCanvas.transform.GetChild(0).gameObject.SetActive(false);
+            squadCanvas.transform.GetChild(1).gameObject.SetActive(true);
+
+            // switch headers
+            squadCanvas.transform.GetChild(2).gameObject.SetActive(false);
+            squadCanvas.transform.GetChild(3).gameObject.SetActive(true);
+
+            SquadInitialisation.Instance._name = entityName;
+            StartCoroutine(SquadInitialisation.Instance.InitialiseSquadQuery());
+        }
         
         yield break;
     }
