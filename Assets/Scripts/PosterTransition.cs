@@ -29,12 +29,10 @@ public class PosterTransition : MonoBehaviour
     public void TransitToHq(string hqName)
     {
         StartCoroutine(LoadScene("Headquarters", hqName, LoadSceneMode.Single));   
-        Debug.Log("hq " + hqName); 
     }
     public void TransitToSquad(string squadName)
     {
         StartCoroutine(LoadScene("Squads", squadName, LoadSceneMode.Single));  
-        Debug.Log("sq " + squadName);  
     }
 
     public void SquadSceneHandler(bool _switch) // _switch(true) = turn on; _switch(off) = turn off
@@ -58,7 +56,7 @@ public class PosterTransition : MonoBehaviour
             SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         else if (sceneMode == LoadSceneMode.Single)
             SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.9f);
 
         if (sceneMode == LoadSceneMode.Additive)
         {

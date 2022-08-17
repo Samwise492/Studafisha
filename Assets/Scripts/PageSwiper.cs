@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class PageSwiper : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
     float startPos, endPos;
+    [SerializeField] SideMenu sideMenu;
 
     public void OnDrag(PointerEventData eventData) { }
     public void OnBeginDrag(PointerEventData eventData)
@@ -29,7 +30,7 @@ public class PageSwiper : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
         endPos = Input.mousePosition.x;
         #endif
 
-        if (this.transform.GetChild(0).gameObject.activeSelf) // if main scroll view is active
+        if (this.transform.GetChild(0).gameObject.activeSelf && !sideMenu.gameObject.activeSelf) // if main scroll view is active
         {
             if (SceneManager.GetActiveScene().name == "All")
             {

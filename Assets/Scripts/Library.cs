@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using System;
 
 public class Library : MonoBehaviour
 {
@@ -12,11 +13,13 @@ public class Library : MonoBehaviour
     [SerializeField] Image header;
     [SerializeField] GameObject articleShell;
     [SerializeField] Button pdfButton1, pdfButton2;
+    [SerializeField] SideMenu sideMenu;
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
     string articleText;
     string link1, link2;
 
 #region Buttons
+    public void OnClickAvatar() => sideMenu.gameObject.SetActive(true);
     public void OnClickOpenArticle()
     {
         pdfButton1.gameObject.SetActive(false);
@@ -32,7 +35,7 @@ public class Library : MonoBehaviour
         articleShell.SetActive(true);
 
         articleShell.gameObject.SetActive(true);
-        StartCoroutine(LibraryArticleQuery(EventSystem.current.currentSelectedGameObject.transform.GetChild(0).name.Split(' ')[1]));
+        StartCoroutine(LibraryArticleQuery(Int32.Parse(EventSystem.current.currentSelectedGameObject.transform.GetChild(0).name.Split(' ')[1])));
     }
     public void OnClickOpenPDF1() => Application.OpenURL(link1);
     public void OnClickOpenPDF2() => Application.OpenURL(link2);
@@ -69,7 +72,7 @@ public class Library : MonoBehaviour
 #endregion
 
 #region SQL
-    IEnumerator LibraryArticleQuery(string id)
+    IEnumerator LibraryArticleQuery(int id)
     {
         WWWForm form = new WWWForm();
         form.AddField("Id", id);
@@ -78,11 +81,13 @@ public class Library : MonoBehaviour
         {
             yield return www.SendWebRequest();
             string responseText = www.downloadHandler.text;
-            Debug.Log(responseText);
 
-            articleText = responseText.Split('|')[0];
-            link1 = responseText.Split('|')[1];
-            link2 = responseText.Split('|')[2];
+            if (responseText.Trim() != "0 results")
+            {
+                articleText = responseText.Split('|')[0];
+                link1 = responseText.Split('|')[1];
+                link2 = responseText.Split('|')[2];
+            }
         }
 
         articleShell.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = articleText;

@@ -18,9 +18,11 @@ public class Squads : MonoBehaviour
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
     List<string> squads = new List<string>();
     List<string> squadCities = new List<string>();
+    List<string> squadsWithoutHq = new List<string>();
     List<string> hqs = new List<string>();
     [SerializeField] GameObject squadShell, historicalPersonShell, dividerShell;
     [SerializeField] GameObject nest;
+    [SerializeField] SideMenu sideMenu;
 
     void Start()
     {
@@ -28,7 +30,7 @@ public class Squads : MonoBehaviour
     }
 
 #region Buttons
-    public void OnClickAvatar() => SceneManager.LoadSceneAsync("Profile", LoadSceneMode.Single);
+    public void OnClickAvatar() => sideMenu.gameObject.SetActive(true);
     void OnClickOpenContent(Button button, GameObject content)
     {
         if (button.GetComponent<Image>().isActiveAndEnabled == true)
@@ -44,7 +46,6 @@ public class Squads : MonoBehaviour
             content.SetActive(false);
         }
     }
-    public void OnClickArchive() => OnClickOpenContent(archiveButton, archiveContent);
     public void OnClickOpenHistory() 
     {
         if (SquadInitialisation.Instance.history != "")
@@ -114,6 +115,9 @@ public class Squads : MonoBehaviour
             historyContent.SetActive(false);
             historicalPeopleContent.SetActive(false);
         }
+
+        if (SceneManager.sceneCount > 1) // Clicked "My squads"
+            SceneManager.UnloadSceneAsync("Squads");
     }
     public void OnClickOpenVK() => Application.OpenURL(SquadInitialisation.Instance.vk);
     public void OnClickOpenMail() => Application.OpenURL(SquadInitialisation.Instance.mail);
@@ -139,6 +143,20 @@ public class Squads : MonoBehaviour
             }
         }
 
+        squadForm = new WWWForm();
+        squadForm.AddField("get_squads_without_hq", "");
+
+        using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "get_squadList.php", squadForm))
+        {
+            yield return www.SendWebRequest();
+            string responseText = www.downloadHandler.text;
+            for (int i = 0; i < responseText.Split('|').Length; i++)
+            {
+                if (responseText.Split('|')[i] != "")
+                    squadsWithoutHq.Add(responseText.Split('|')[i]);
+            }
+        }
+
         WWWForm hqForm = new WWWForm();
         hqForm.AddField("get_hqs", "");
 
@@ -160,6 +178,18 @@ public class Squads : MonoBehaviour
                 var squad = Instantiate(squadShell, nest.transform);
                 squad.transform.GetChild(0).GetComponent<Text>().text = squads[i];
                 squad.transform.GetChild(1).GetComponent<Text>().text = hqs[i];
+                squad.GetComponent<Button>().onClick.AddListener(InitialiseSquad);
+
+                instantiatedSquads.Add(squad);
+            }
+        }
+        for (var i = 0; i < squadsWithoutHq.Count; i++)
+        {
+            if (squadsWithoutHq[0] != "0 results")
+            {
+                var squad = Instantiate(squadShell, nest.transform);
+                squad.transform.GetChild(0).GetComponent<Text>().text = squadsWithoutHq[i];
+                squad.transform.GetChild(1).GetComponent<Text>().text = "";
                 squad.GetComponent<Button>().onClick.AddListener(InitialiseSquad);
 
                 instantiatedSquads.Add(squad);
@@ -225,8 +255,23 @@ public class Squads : MonoBehaviour
         headerSquad.gameObject.SetActive(true);
         scrollViewSquad.gameObject.SetActive(true);
         
-        SquadInitialisation.Instance._name = EventSystem.current.currentSelectedGameObject.transform.GetChild(0).GetComponent<Text>().text.Split(' ')[1];
+        string squadName = "";
+        string[] splittedHqName = EventSystem.current.currentSelectedGameObject.transform.GetChild(0).GetComponent<Text>().text.Split(' ');
+        List<string> wholeHqName = new List<string>();
+        foreach(var word in splittedHqName)
+        {
+            if (word != splittedHqName[0])
+                wholeHqName.Add(word);
+        }
+        foreach(var word in wholeHqName)
+        {
+            squadName += word + " ";
+        }
+        squadName.Trim(' ');
+
+        SquadInitialisation.Instance._name = squadName;
         SquadInitialisation.Instance.type = EventSystem.current.currentSelectedGameObject.transform.GetChild(0).GetComponent<Text>().text.Split(' ')[0];
+
         SquadInitialisation.Instance.hq = EventSystem.current.currentSelectedGameObject.transform.GetChild(1).GetComponent<Text>().text;
         StartCoroutine(SquadInitialisation.Instance.InitialiseSquadQuery());
         if (SquadInitialisation.Instance.vk == "" && SquadInitialisation.Instance.mail == "")
@@ -254,6 +299,19 @@ public class Squads : MonoBehaviour
                     divider.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = squadCities[j];
             }
             addedCities.Add(divider.transform.GetChild(0).GetChild(0).GetComponent<Text>().text);
+        }
+        if (squadsWithoutHq[0] != "0 results")
+        {
+            var _divider = Instantiate(dividerShell, nest.transform);
+            _divider.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Эти отряды не имеют штаба";
+
+            foreach (var squad in _squads)
+            {
+                if (squad.transform.GetChild(1).GetComponent<Text>().text == "")
+                {
+                    squad.transform.SetParent(_divider.transform.GetChild(1));
+                }
+            }
         }
 
         // sort

@@ -10,6 +10,7 @@ public class EventInitialisation : MonoBehaviour
     [SerializeField] GameObject eventNest;
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
     List<string> events = new List<string>();
+    
     void Start()
     {
         StartCoroutine(EventsQuery());

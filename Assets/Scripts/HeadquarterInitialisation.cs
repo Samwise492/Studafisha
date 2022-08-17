@@ -18,6 +18,7 @@ public class HeadquarterInitialisation : MonoBehaviour
     [SerializeField] GameObject staffShell;
     [SerializeField] GameObject staffNest;
     [SerializeField] GameObject hqNest;
+    [SerializeField] GameObject backgroundFrame;
 
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
 
@@ -322,11 +323,26 @@ public class HeadquarterInitialisation : MonoBehaviour
             }
 
             hqNest.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Штаб " + _name;
-            hqNest.transform.GetChild(0).GetChild(1).GetChild(5).GetChild(0).GetComponent<Text>().text = address;
+            hqNest.transform.GetChild(0).GetChild(1).GetChild(8).GetChild(0).GetComponent<Text>().text = address;
             CreateStaffShells();
             StartCoroutine(RefreshContent(staffNest, true));
         }
 
+        yield break;
+    }
+    void Start()
+    {
+        StartCoroutine(RefreshContentForSquads());
+    }
+
+    IEnumerator RefreshContentForSquads()
+    {
+        yield return new WaitForSeconds(1);
+        backgroundFrame.SetActive(true);
+        yield return new WaitForEndOfFrame();
+        backgroundFrame.SetActive(false);
+        yield return new WaitForEndOfFrame();
+        backgroundFrame.SetActive(true);
         yield break;
     }
 }

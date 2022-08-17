@@ -18,7 +18,7 @@ public class Sign_Up : MonoBehaviour
     [SerializeField] Toggle personalData, rules;
     [SerializeField] Text errorText;
     public Image hqPopUp, squadPopUp, positionPopUp;
-    string squadId = ""; // change to int
+    int squadId; // change to int
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
     string errorMessage = "";
     RectTransform[] menus = new RectTransform[5];
@@ -128,7 +128,7 @@ public class Sign_Up : MonoBehaviour
         using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "get_squads_id.php", idForm))
         {
             yield return www.SendWebRequest();
-            squadId = www.downloadHandler.text;
+            squadId = Int32.Parse(www.downloadHandler.text);
             form.AddField("Squad_Id", squadId);
         }
         yield break;
@@ -183,7 +183,7 @@ public class Sign_Up : MonoBehaviour
         form.AddField("Login", "Reglog2111212");
         form.AddField("password1", "Debian234");
         form.AddField("password2", "Debian234");
-        form.AddField("Squad_Id", "11000008");
+        form.AddField("Squad_Id", 11000008);
         form.AddField("LastName", "Денисов");
         form.AddField("Name", "Алех");
         form.AddField("Position", "Мастер");

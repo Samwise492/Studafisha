@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -7,7 +8,7 @@ public class UserData : MonoBehaviour
 {
     public static UserData Instance { get; set; }
     public string login, lastName, firstName, position, hq, squad;
-    public string userId;
+    public int userId;
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
 
     void Awake()
@@ -43,7 +44,7 @@ public class UserData : MonoBehaviour
                     yield return www.SendWebRequest();
                     string responseText = www.downloadHandler.text;
 
-                    userId = responseText.Split(';')[0];
+                    userId = Int32.Parse(responseText.Split(';')[0]);
                     lastName = responseText.Split(';')[1];
                     firstName = responseText.Split(';')[2];
                     position = responseText.Split(';')[3];

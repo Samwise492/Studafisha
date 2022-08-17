@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using System.Linq;
+using System;
 
 public class Poster : MonoBehaviour
 {
@@ -16,16 +17,18 @@ public class Poster : MonoBehaviour
     [SerializeField] Button creatorsButton, whatBringOnButton, signUpButton, infoButton;
     [SerializeField] GameObject creatorsContent, whatBringOnContent, signUpContent, infoContent;
 
-    public string eventTitle, eventId;
+    public string eventTitle;
+    public int eventId;
     public bool isVolunteer;
     [SerializeField] GameObject photoLayoutContent, albumContent;
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
     List<string> organizers = new List<string>();
-    List<string> organizerSquadIds = new List<string>(); // change to int
+    List<int> organizerSquadIds = new List<int>(); // change to int
     List<string> organizerSquads = new List<string>();
     List<string> organizerPhoneNumbers = new List<string>();
     List<string> itemsToBring = new List<string>();
     [SerializeField] GameObject creatorShell, itemToBringShell;
+    [SerializeField] SideMenu sideMenu;
 
     void Awake()
     {
@@ -35,7 +38,7 @@ public class Poster : MonoBehaviour
     }
 
 #region Buttons
-    public void OnClickAvatar() => SceneManager.LoadSceneAsync("Profile", LoadSceneMode.Single);
+    public void OnClickAvatar() => sideMenu.gameObject.SetActive(true);
     public void OnClickEvent(string[] info)
     {
         headerMain.gameObject.SetActive(false);
@@ -45,12 +48,12 @@ public class Poster : MonoBehaviour
 
         var _event = scrollViewEvent.transform.GetChild(0).GetChild(0);
         eventTitle = info[0];
-        eventId = info[16];
+        eventId = Int32.Parse(info[16]);
         _event.GetChild(2).GetComponent<Text>().text = eventTitle; // title
         _event.GetChild(3).GetComponent<Text>().text = info[1]; // type
         _event.GetChild(4).GetChild(1).GetComponent<Text>().text = info[3]; // description
         _event.GetChild(5).GetChild(0).GetComponent<Text>().text = info[9]; // address
-        StartCoroutine(OrganizersQuery(info[4], info[5], info[6], info[7]));
+        StartCoroutine(OrganizersQuery(Int32.Parse(info[4]), Int32.Parse(info[5]), Int32.Parse(info[6]), Int32.Parse(info[7])));
         StartCoroutine(ItemsToBringQuery(info[0]));
     }
     public void OnClickBackToMenu()
@@ -193,17 +196,17 @@ public class Poster : MonoBehaviour
 #endregion
 
 #region SQL
-    IEnumerator OrganizersQuery(string organizer1, string organizer2, string organizer3, string organizer4) //change to int
+    IEnumerator OrganizersQuery(int organizer1_id, int organizer2_id, int organizer3_id, int organizer4_id) //change to int
     {
         WWWForm form = new WWWForm();
-        if (organizer1 != null || organizer1 != "")
-            form.AddField("Organizer1_Id", organizer1);
-        if (organizer2 != null || organizer2 != "")
-            form.AddField("Organizer2_Id", organizer2);
-        if (organizer3 != null || organizer3 != "")
-            form.AddField("Organizer3_Id", organizer3);
-        if (organizer4 != null || organizer4 != "")
-            form.AddField("Organizer4_Id", organizer4);
+        if (organizer1_id != 0)
+            form.AddField("Organizer1_Id", organizer1_id);
+        if (organizer2_id != 0)
+            form.AddField("Organizer2_Id", organizer2_id);
+        if (organizer3_id != 0)
+            form.AddField("Organizer3_Id", organizer3_id);
+        if (organizer4_id != 0)
+            form.AddField("Organizer4_Id", organizer4_id);
 
         using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "get_eventOrganizers.php", form))
         {
@@ -215,7 +218,7 @@ public class Poster : MonoBehaviour
                 if (splittedInfo[0] != "")
                 {
                     organizers.Add(splittedInfo[0]);
-                    organizerSquadIds.Add(splittedInfo[1]);
+                    organizerSquadIds.Add(Int32.Parse(splittedInfo[1]));
                     organizerPhoneNumbers.Add(splittedInfo[2]);
                 }
             }

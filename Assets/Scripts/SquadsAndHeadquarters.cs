@@ -17,6 +17,7 @@ public class SquadsAndHeadquarters : MonoBehaviour
     List<string> squadCities = new List<string>();
     [SerializeField] GameObject headquarterShell, squadShell, dividerShell;
     [SerializeField] GameObject nest, hqNest;
+    [SerializeField] SideMenu sideMenu;
 
     void Start()
     {
@@ -24,7 +25,7 @@ public class SquadsAndHeadquarters : MonoBehaviour
     }
 
 #region Buttons
-    public void OnClickAvatar() => SceneManager.LoadSceneAsync("Profile", LoadSceneMode.Single);
+    public void OnClickAvatar() => sideMenu.gameObject.SetActive(true);
     public void FooterSwitch()
     {
         switch (EventSystem.current.currentSelectedGameObject.name)

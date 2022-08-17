@@ -17,6 +17,7 @@ public class Headquarters : MonoBehaviour
     List<string> headquarters = new List<string>();
     [SerializeField] GameObject headquarterShell;
     [SerializeField] GameObject nest;
+    [SerializeField] SideMenu sideMenu;
 
     void Start()
     {
@@ -24,7 +25,7 @@ public class Headquarters : MonoBehaviour
     }
 
 #region Buttons
-    public void OnClickAvatar() => SceneManager.LoadSceneAsync("Profile", LoadSceneMode.Single);
+    public void OnClickAvatar() => sideMenu.gameObject.SetActive(true);
     public void OnClickOpenHistory() 
     {
         historyContent.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = HeadquarterInitialisation.Instance.history;
@@ -119,8 +120,13 @@ public class Headquarters : MonoBehaviour
         HeadquarterInitialisation.Instance._name = EventSystem.current.currentSelectedGameObject.transform.GetChild(0).GetComponent<Text>().text;
         StartCoroutine(HeadquarterInitialisation.Instance.InitialiseHeadquarterQuery());
         if (HeadquarterInitialisation.Instance.vk == "")
-            vkButton.gameObject.SetActive(false);
-        if (HeadquarterInitialisation.Instance.mail == "")
-            mailButton.gameObject.SetActive(false);  
+        {
+            vkButton.transform.parent.parent.parent.gameObject.transform.GetChild(6).gameObject.SetActive(false);
+            if (HeadquarterInitialisation.Instance.vk == "")
+                vkButton.gameObject.SetActive(false);
+            if (HeadquarterInitialisation.Instance.mail == "")
+                mailButton.gameObject.SetActive(false);  
+        }
+        
     }
 }

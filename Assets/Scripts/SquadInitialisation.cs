@@ -199,7 +199,7 @@ public class SquadInitialisation : MonoBehaviour
 
             squadNest.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = type + " " + _name;
             squadNest.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>().text = hq;
-            squadNest.transform.GetChild(0).GetChild(1).GetChild(5).GetChild(0).GetChild(1).GetComponent<Text>().text = hq;
+            squadNest.transform.GetChild(0).GetChild(1).GetChild(5).GetChild(1).GetChild(1).GetComponent<Text>().text = hq;
             squadNest.transform.GetChild(0).GetChild(1).GetChild(6).GetChild(0).GetComponent<Text>().text = address;
             CreateStaffShells();
             StartCoroutine(RefreshContent(staffNest, true));
