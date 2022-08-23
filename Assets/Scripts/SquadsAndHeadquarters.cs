@@ -124,7 +124,7 @@ public class SquadsAndHeadquarters : MonoBehaviour
     public void OnClickOpenHeadquarter()
     {   
         PosterTransition.Instance.TransitToHq
-        (EventSystem.current.currentSelectedGameObject.transform.GetChild(1).GetComponent<Text>().text);
+        (EventSystem.current.currentSelectedGameObject.transform.GetChild(0).GetComponent<Text>().text);
     }
     public void OnClickOpenSquad()
     {   

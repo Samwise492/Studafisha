@@ -77,12 +77,13 @@ public class Library : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("Id", id);
 
+        
         using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "get_libraryArticleData.php", form))
         {
             yield return www.SendWebRequest();
             string responseText = www.downloadHandler.text;
 
-            if (responseText.Trim() != "0 results")
+            if (responseText.Trim(' ') != "0 results")
             {
                 articleText = responseText.Split('|')[0];
                 link1 = responseText.Split('|')[1];
@@ -91,10 +92,10 @@ public class Library : MonoBehaviour
         }
 
         articleShell.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = articleText;
-        if (link1 != "")
+        if (link1 != "" && link1 != null)
         {
             pdfButton1.gameObject.SetActive(true);
-            if (link2 != "")
+            if (link2 != "" && link2 != null)
             {
                 pdfButton2.gameObject.SetActive(true);
             }

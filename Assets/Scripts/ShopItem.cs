@@ -5,14 +5,18 @@ using UnityEngine.UI;
 
 public class ShopItem : MonoBehaviour
 {
-    [SerializeField] int id;
-    [SerializeField] int price;
-    [SerializeField] int scoresForDiscount;
-    [SerializeField] string url;
+    public int id;
+    public int price;
+    public int discountedPrice;
+    public int scoresForDiscount;
+    public string link;
+    [SerializeField] Text priceText, discountedPriceText;
 
-    // Start is called before the first frame update
     void Start()
     {
-        this.GetComponent<Button>().onClick.AddListener(() => Application.OpenURL(url));
+        priceText.text = price.ToString();
+        discountedPriceText.text = discountedPrice.ToString();
+
+        this.GetComponent<Button>().onClick.AddListener(() => Application.OpenURL(link));
     }
 }

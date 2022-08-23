@@ -12,7 +12,7 @@ public class Poster : MonoBehaviour
 {
     public static Poster Instance {get; set;}
     [SerializeField] Image headerMain, headerEvent, footer;
-    [SerializeField] Image headerEvent_mainTitle, headerEvent_participantTitle, headerEvent_volunteerTitle;
+    [SerializeField] Text headerEvent_mainTitle, headerEvent_participantTitle, headerEvent_volunteerTitle;
     [SerializeField] Image scrollViewMain, scrollViewEvent, scrollViewEvent_Participant, scrollViewEvent_Volunteer, scrollViewInfo_EventPlan;
     [SerializeField] Button creatorsButton, whatBringOnButton, signUpButton, infoButton;
     [SerializeField] GameObject creatorsContent, whatBringOnContent, signUpContent, infoContent;
@@ -41,6 +41,9 @@ public class Poster : MonoBehaviour
     public void OnClickAvatar() => sideMenu.gameObject.SetActive(true);
     public void OnClickEvent(string[] info)
     {
+        ClearLists();
+        ClearShells();
+
         headerMain.gameObject.SetActive(false);
         scrollViewMain.gameObject.SetActive(false);
         headerEvent.gameObject.SetActive(true);
@@ -49,10 +52,10 @@ public class Poster : MonoBehaviour
         var _event = scrollViewEvent.transform.GetChild(0).GetChild(0);
         eventTitle = info[0];
         eventId = Int32.Parse(info[16]);
-        _event.GetChild(2).GetComponent<Text>().text = eventTitle; // title
-        _event.GetChild(3).GetComponent<Text>().text = info[1]; // type
-        _event.GetChild(4).GetChild(1).GetComponent<Text>().text = info[3]; // description
-        _event.GetChild(5).GetChild(0).GetComponent<Text>().text = info[9]; // address
+        _event.GetChild(0).GetChild(1).GetComponent<Text>().text = eventTitle; // title
+        _event.GetChild(0).GetChild(2).GetComponent<Text>().text = info[1]; // type
+        _event.GetChild(0).GetChild(3).GetChild(1).GetComponent<Text>().text = info[3]; // description
+        _event.GetChild(0).GetChild(4).GetChild(0).GetComponent<Text>().text = info[9]; // address
         StartCoroutine(OrganizersQuery(Int32.Parse(info[4]), Int32.Parse(info[5]), Int32.Parse(info[6]), Int32.Parse(info[7])));
         StartCoroutine(ItemsToBringQuery(info[0]));
     }
@@ -212,6 +215,7 @@ public class Poster : MonoBehaviour
         {
             yield return www.SendWebRequest();
             string responseText = www.downloadHandler.text;
+
             foreach(string organizer in responseText.Split('|'))
             {
                 var splittedInfo = organizer.Split('ì');
@@ -258,6 +262,7 @@ public class Poster : MonoBehaviour
         {
             yield return www.SendWebRequest();
             string responseText = www.downloadHandler.text;
+
             foreach(string squad in responseText.Split('|'))
             {
                 organizerSquads.Add(squad);
@@ -299,4 +304,24 @@ public class Poster : MonoBehaviour
         yield break;
     }
 #endregion
+
+    void ClearLists()
+    {
+        organizers.Clear();
+        organizerSquadIds.Clear();
+        organizerSquads.Clear();
+        organizerPhoneNumbers.Clear();
+        itemsToBring.Clear();
+    }
+    void ClearShells()
+    {
+        foreach (Transform child in whatBringOnContent.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (Transform child in creatorsContent.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
 }

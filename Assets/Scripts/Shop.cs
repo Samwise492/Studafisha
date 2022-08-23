@@ -50,10 +50,29 @@ public class Shop : MonoBehaviour
             yield return www.SendWebRequest();
             string responseText = www.downloadHandler.text;
 
-            ids.Add(Int32.Parse(responseText.Split('|')[0]));
-            links.Add(responseText.Split('|')[1]);
-            prices.Add(Int32.Parse(responseText.Split('|')[2]));
-            discountedPrices.Add(Int32.Parse(responseText.Split('|')[3]));
+            if (responseText.Trim(' ') != "0 results")
+            {
+                ids.Add(Int32.Parse(responseText.Split('|')[0]));
+                links.Add(responseText.Split('|')[1]);
+                prices.Add(Int32.Parse(responseText.Split('|')[2]));
+                scoresForDiscount.Add(Int32.Parse(responseText.Split('|')[3]));
+                discountedPrices.Add(Int32.Parse(responseText.Split('|')[4]));
+            }
+        }
+
+        foreach (Transform item in itemNest.transform)
+        {
+            var shopItem = item.GetComponent<ShopItem>();
+            for (int i = 0; i < ids.Count; i++)
+            {
+                if (shopItem.id == ids[i])
+                {
+                    shopItem.link = links[i];
+                    shopItem.price = prices[i];
+                    shopItem.scoresForDiscount = scoresForDiscount[i];
+                    shopItem.discountedPrice = discountedPrices[i];
+                }
+            }
         }
 
         yield break;

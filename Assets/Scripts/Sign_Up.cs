@@ -128,8 +128,11 @@ public class Sign_Up : MonoBehaviour
         using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "get_squads_id.php", idForm))
         {
             yield return www.SendWebRequest();
-            squadId = Int32.Parse(www.downloadHandler.text);
-            form.AddField("Squad_Id", squadId);
+            if (www.downloadHandler.text.Trim(' ') != "0 results")
+            {
+                squadId = Int32.Parse(www.downloadHandler.text);
+                form.AddField("Squad_Id", squadId);
+            }
         }
         yield break;
     }
