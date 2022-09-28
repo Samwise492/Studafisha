@@ -23,7 +23,8 @@ public class Sign_In : MonoBehaviour
     public void NotFromRSO()
     {
         UserData.Instance.login = "/Guest";
-        SceneManager.LoadSceneAsync("Disclaimer", LoadSceneMode.Single);
+        //SceneManager.LoadSceneAsync("Disclaimer", LoadSceneMode.Single);
+        SceneManager.LoadSceneAsync("Poster", LoadSceneMode.Single);
     }
     public void ForgotPassword()
     {
@@ -60,7 +61,8 @@ public class Sign_In : MonoBehaviour
 
                 if (responseText.StartsWith("Success"))
                 {
-                    SceneManager.LoadSceneAsync("Disclaimer", LoadSceneMode.Single);
+                    //SceneManager.LoadSceneAsync("Disclaimer", LoadSceneMode.Single);
+                    SceneManager.LoadSceneAsync("Poster", LoadSceneMode.Single);
                     string[] dataChunks = responseText.Split('|');
                     login.text = dataChunks[1];
                     UserData.Instance.login = login.text;
@@ -80,6 +82,15 @@ public class Sign_In : MonoBehaviour
         }
         errorMessage = "";
         yield break;
+    }
+#endregion
+
+#region Debug
+    public void AutoFill()
+    {
+        login.transform.parent.GetComponent<InputField>().text = "Jamilchik";
+        password.text = "Lollol321";
+        StartCoroutine(LoginEnumerator());
     }
 #endregion
 }

@@ -42,6 +42,7 @@ public class Shop : MonoBehaviour
                 break;
         }   
     }
+    public void OnClickDisclaimer() => Application.OpenURL("https://vk.com/dmzakharov");
 
     IEnumerator ShopQuery()
     {

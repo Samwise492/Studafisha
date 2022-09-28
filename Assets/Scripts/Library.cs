@@ -77,7 +77,6 @@ public class Library : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("Id", id);
 
-        
         using (UnityWebRequest www = UnityWebRequest.Post(rootURL + "get_libraryArticleData.php", form))
         {
             yield return www.SendWebRequest();
