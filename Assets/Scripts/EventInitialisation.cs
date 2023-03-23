@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+//using Mycom.Target.Unity.Ads;
+using System;
 
 public class EventInitialisation : MonoBehaviour
 {
@@ -10,7 +12,17 @@ public class EventInitialisation : MonoBehaviour
     [SerializeField] GameObject eventNest;
     string rootURL = "http://database.com.masterhost.tech/"; //Path where php files are located
     List<string> events = new List<string>();
+    //private MyTargetView _myTargetView;
     
+    void Awake()
+    {
+        //UInt32 slotId = 0;
+#if UNITY_ANDROID
+    //slotId = ANDROID_SLOT_ID;
+#elif UNITY_IOS
+    //slotId = IOS_SLOT_ID;
+#endif
+    }
     void Start()
     {
         StartCoroutine(EventsQuery());
